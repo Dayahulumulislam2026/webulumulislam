@@ -200,5 +200,14 @@ class StructureController extends Controller
 
         return back()->with('success', "Status {$position->position_name}: {$statusText}.");
     }
+
+    public function syncDayah(): RedirectResponse
+    {
+        (new \Database\Seeders\DayahStructureSeeder())->run();
+        AuditLog::log('sync', 'structure_dayah', null, 'Sinkronisasi susunan pengurus resmi Dayah.');
+
+        return redirect()->route('admin.structure.index', ['tab' => 'dayah'])
+            ->with('success', 'Susunan pengurus resmi Dayah Ulumul Islam berhasil disinkronkan!');
+    }
 }
 
