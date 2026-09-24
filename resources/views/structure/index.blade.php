@@ -100,41 +100,76 @@
             </div>
             @endif
 
-            <!-- 2. Jajaran Wakil Pimpinan (Dibuat seperti tampilan Pimpinan Utama) -->
+            <!-- 2. Jajaran Wakil & Pimpinan Harian (Dikelompokkan per Jabatan / Bidang Dinamis) -->
             @if($vices && $vices->count() > 0)
-            <div class="space-y-6 pt-4 scroll-reveal">
+            <div class="space-y-8 pt-4 scroll-reveal">
                 <div class="text-center space-y-1">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Jajaran Struktural</span>
-                    <h3 class="text-lg font-black text-slate-900">Jajaran Wakil & Pimpinan Harian</h3>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-primary-800">Jajaran Struktural</span>
+                    <h3 class="text-xl font-black text-slate-900">Jajaran Wakil & Pimpinan Harian</h3>
+                    <p class="text-xs text-text-sub font-medium">Bagan kepengurusan wakil pimpinan, pimpinan harian, pamong, bendahara, sekretaris, dan bidang terkait.</p>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-6">
+                <div class="space-y-6">
                     @foreach($vices as $vPos)
-                        @foreach($vPos->members as $vice)
-                        <div class="w-full max-w-xs bg-white rounded-3xl p-6 border border-border-main shadow-md text-center flex flex-col items-center space-y-4 hover:-translate-y-1 transition-transform">
-                            <div class="relative w-28 h-28 rounded-3xl overflow-hidden bg-slate-100 ring-4 ring-slate-50 shadow-sm">
-                                @if($vice->photo_path)
-                                <img src="{{ $vice->photo_path }}" alt="{{ $vice->name }}" class="w-full h-full object-cover">
-                                @else
-                                <div class="w-full h-full flex items-center justify-center bg-slate-800 text-white font-black text-2xl">
-                                    {{ substr($vice->name, 0, 1) }}
-                                </div>
-                                @endif
-                            </div>
-                            <div class="space-y-1 w-full">
-                                <h4 class="text-sm font-black text-slate-900 leading-snug">{{ $vice->name }}</h4>
-                                <p class="text-xs font-bold text-primary-900 uppercase tracking-wider">{{ $vice->title ?: $vPos->position_name }}</p>
-                                @if($vice->sub_role)
-                                <p class="text-[11px] text-slate-600 font-medium mt-1">{{ $vice->sub_role }}</p>
-                                @endif
-                                @if($vice->period)
-                                <span class="inline-block mt-2 px-3 py-1 rounded-full bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-semibold">
-                                    Masa Khidmat: {{ $vice->period }}
+                    <div class="bg-white rounded-3xl border border-border-main shadow-xs overflow-hidden">
+                        <div class="p-5 sm:p-6 bg-gradient-to-r from-primary-50/90 via-slate-50 to-white border-b border-border-main flex items-center justify-between gap-4">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-xl bg-primary-950 text-accent-gold font-black flex items-center justify-center text-xs shadow-xs">
+                                    {{ $loop->iteration }}
                                 </span>
-                                @endif
+                                <div>
+                                    <h4 class="text-base font-black text-slate-900">{{ $vPos->position_name }}</h4>
+                                    <p class="text-[11px] text-primary-900 font-bold">{{ $vPos->members->count() }} Pejabat / Anggota Pengurus</p>
+                                </div>
                             </div>
                         </div>
-                        @endforeach
+
+                        <div class="p-6">
+                            @if($vPos->members->count() > 0)
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                @foreach($vPos->members as $vice)
+                                <div class="p-4 rounded-2xl border {{ $vice->member_role === 'head' ? 'border-primary-300 bg-primary-50/40' : 'border-slate-200 bg-white' }} space-y-2.5 hover:shadow-sm transition-shadow">
+                                    <div class="flex items-start gap-3.5">
+                                        <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200 shadow-2xs">
+                                            @if($vice->photo_path)
+                                            <img src="{{ $vice->photo_path }}" alt="{{ $vice->name }}" class="w-full h-full object-cover">
+                                            @else
+                                            <div class="w-full h-full flex items-center justify-center {{ $vice->member_role === 'head' ? 'bg-primary-900 text-white' : 'bg-slate-800 text-white' }} font-black text-sm">
+                                                {{ strtoupper(substr($vice->name, 0, 2)) }}
+                                            </div>
+                                            @endif
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-center gap-1.5 flex-wrap">
+                                                <h5 class="font-black text-xs text-slate-900 truncate" title="{{ $vice->name }}">{{ $vice->name }}</h5>
+                                                @if($vice->member_role === 'head')
+                                                <span class="px-1.5 py-0.5 rounded bg-primary-900 text-white font-extrabold text-[8px] uppercase">
+                                                    Ketua / Pimpinan
+                                                </span>
+                                                @endif
+                                            </div>
+                                            <p class="text-[11px] font-bold text-primary-900 uppercase tracking-wider mt-0.5">{{ $vice->title ?: $vPos->position_name }}</p>
+                                            
+                                            @if($vice->sub_role)
+                                            <div class="mt-1.5 p-2 rounded-xl bg-slate-100/90 border border-slate-200 text-[10px] text-slate-700 leading-relaxed font-medium">
+                                                <span class="font-bold text-[9px] text-slate-500 uppercase block">Tupoksi / Tugas:</span>
+                                                {{ $vice->sub_role }}
+                                            </div>
+                                            @endif
+                                            
+                                            @if($vice->period)
+                                            <p class="text-[9px] text-slate-500 font-semibold mt-1">Masa Khidmat: {{ $vice->period }}</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                            @else
+                            <p class="text-xs text-slate-400 italic text-center py-4">Belum ada pengurus yang terdaftar pada bidang ini.</p>
+                            @endif
+                        </div>
+                    </div>
                     @endforeach
                 </div>
             </div>
