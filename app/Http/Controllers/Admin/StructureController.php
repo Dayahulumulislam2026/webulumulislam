@@ -218,6 +218,16 @@ class StructureController extends Controller
         return redirect()->route('admin.structure.index', ['tab' => 'smp'])
             ->with('success', 'Susunan pengurus resmi SMP Swasta Ulumul Islam berhasil disinkronkan!');
     }
+
+    public function syncIkada(): RedirectResponse
+    {
+        (new \Database\Seeders\IkadaStructureSeeder())->run();
+        AuditLog::log('sync', 'structure_ikada', null, 'Sinkronisasi susunan pengurus resmi IKADA UI.');
+
+        return redirect()->route('admin.structure.index', ['tab' => 'ikada'])
+            ->with('success', 'Susunan pengurus resmi IKADA UI berhasil disinkronkan!');
+    }
 }
+
 
 

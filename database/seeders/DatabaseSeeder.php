@@ -177,8 +177,9 @@ class DatabaseSeeder extends Seeder
         SiteSetting::set('whatsapp_template_yayasan', 'Assalamualaikum. Saya ingin bertanya mengenai informasi Yayasan Ulumul Islam.');
         SiteSetting::set('whatsapp_template_dayah', 'Assalamualaikum. Saya ingin bertanya mengenai informasi Dayah Terpadu Ulumul Islam.');
 
-        // 6. Struktur Kepengurusan Resmi Dayah & SMP
+        // 6. Struktur Kepengurusan Resmi Dayah, SMP, & IKADA
         $this->call(DayahStructureSeeder::class);
         $this->call(SmpStructureSeeder::class);
+        $this->call(IkadaStructureSeeder::class);
     }
 }

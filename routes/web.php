@@ -115,6 +115,8 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::get('/struktur/sync-dayah', [AdminStructureController::class, 'syncDayah'])->name('structure.sync_dayah_get');
     Route::post('/struktur/sync-smp', [AdminStructureController::class, 'syncSmp'])->name('structure.sync_smp');
     Route::get('/struktur/sync-smp', [AdminStructureController::class, 'syncSmp'])->name('structure.sync_smp_get');
+    Route::post('/struktur/sync-ikada', [AdminStructureController::class, 'syncIkada'])->name('structure.sync_ikada');
+    Route::get('/struktur/sync-ikada', [AdminStructureController::class, 'syncIkada'])->name('structure.sync_ikada_get');
     Route::post('/struktur/anggota', [AdminStructureController::class, 'storeMember'])->name('structure.members.store');
     Route::put('/struktur/anggota/{member}', [AdminStructureController::class, 'updateMember'])->name('structure.members.update');
     Route::delete('/struktur/anggota/{member}', [AdminStructureController::class, 'destroyMember'])->name('structure.members.destroy');
