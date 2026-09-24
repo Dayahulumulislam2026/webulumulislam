@@ -209,5 +209,15 @@ class StructureController extends Controller
         return redirect()->route('admin.structure.index', ['tab' => 'dayah'])
             ->with('success', 'Susunan pengurus resmi Dayah Ulumul Islam berhasil disinkronkan!');
     }
+
+    public function syncSmp(): RedirectResponse
+    {
+        (new \Database\Seeders\SmpStructureSeeder())->run();
+        AuditLog::log('sync', 'structure_smp', null, 'Sinkronisasi susunan pengurus resmi SMP Swasta Ulumul Islam.');
+
+        return redirect()->route('admin.structure.index', ['tab' => 'smp'])
+            ->with('success', 'Susunan pengurus resmi SMP Swasta Ulumul Islam berhasil disinkronkan!');
+    }
 }
+
 

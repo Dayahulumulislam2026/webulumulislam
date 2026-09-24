@@ -113,6 +113,8 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::post('/struktur/posisi/{position}/toggle-pin', [AdminStructureController::class, 'togglePin'])->name('structure.positions.toggle_pin');
     Route::post('/struktur/sync-dayah', [AdminStructureController::class, 'syncDayah'])->name('structure.sync_dayah');
     Route::get('/struktur/sync-dayah', [AdminStructureController::class, 'syncDayah'])->name('structure.sync_dayah_get');
+    Route::post('/struktur/sync-smp', [AdminStructureController::class, 'syncSmp'])->name('structure.sync_smp');
+    Route::get('/struktur/sync-smp', [AdminStructureController::class, 'syncSmp'])->name('structure.sync_smp_get');
     Route::post('/struktur/anggota', [AdminStructureController::class, 'storeMember'])->name('structure.members.store');
     Route::put('/struktur/anggota/{member}', [AdminStructureController::class, 'updateMember'])->name('structure.members.update');
     Route::delete('/struktur/anggota/{member}', [AdminStructureController::class, 'destroyMember'])->name('structure.members.destroy');
