@@ -44,6 +44,7 @@ Route::get('/galeri/{slug}', [GalleryController::class, 'show'])->name('gallery.
 | Authentication Routes
 |--------------------------------------------------------------------------
 */
+Route::redirect('/login', '/admin/login')->name('login');
 Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
 Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
