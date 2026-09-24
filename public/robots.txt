@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Proteksi Panel Admin dari pengindeksan mesin pencari
+Disallow: /admin/
+Disallow: /admin/*
+
+# Lokasi Peta Situs Resmi
+Sitemap: https://ulumulislam.org/sitemap.xml
