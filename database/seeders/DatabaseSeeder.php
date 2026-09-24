@@ -105,6 +105,35 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        $ikada = Institution::updateOrCreate(
+            ['type' => 'ikada'],
+            [
+                'name' => 'IKADA UI (Ikatan Alumni Dayah Ulumul Islam)',
+                'slug' => 'ikada',
+                'short_description' => 'Wadah silaturahmi, jejaring sinergi, dan kontribusi seluruh alumni Dayah Terpadu Ulumul Islam.',
+                'description' => 'IKADA UI adalah organisasi resmi alumni Yayasan & Dayah Terpadu Ulumul Islam.',
+                'vision' => 'Mempererat ukhuwah islamiyah dan mengoptimalkan potensi alumni untuk kemaslahatan ummat dan almamater.',
+                'mission' => [
+                    'Membangun jejaring komunikasi dan database alumni yang solid dan terintegrasi.',
+                    'Mendukung program pengembangan dan kemajuan almamater Dayah Terpadu Ulumul Islam.',
+                    'Menyelenggarakan kegiatan sosial, pendidikan, dan dakwah.',
+                ],
+                'phone' => '628555555555',
+                'whatsapp' => '628555555555',
+                'address' => 'Jl. Ulumul Islam No. 1, Aceh',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'alumni.ulumulislam@gmail.com'],
+            [
+                'name' => 'Admin IKADA',
+                'password' => Hash::make('ikadaulumulislam2026'),
+                'role' => 'admin_ikada',
+                'is_active' => true,
+            ]
+        );
+
         // 3. Statistik Awal SMP & SMA
         Statistic::updateOrCreate(['institution_id' => $smp->id, 'metric' => 'students_male'], ['value' => 0]);
         Statistic::updateOrCreate(['institution_id' => $smp->id, 'metric' => 'students_female'], ['value' => 0]);

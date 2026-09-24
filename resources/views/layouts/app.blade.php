@@ -355,15 +355,50 @@
                     </ul>
                 </div>
 
-                <!-- Kontak & Alamat -->
+                <!-- Kontak & Alamat + Google Maps -->
                 <div class="space-y-3">
-                    <h4 class="text-xs font-extrabold uppercase tracking-widest text-accent-gold border-b border-primary-800 pb-2">Hubungi Kami</h4>
+                    <h4 class="text-xs font-extrabold uppercase tracking-widest text-accent-gold border-b border-primary-800 pb-2 flex items-center justify-between">
+                        <span>Hubungi & Lokasi</span>
+                    </h4>
                     <div class="space-y-2 text-xs text-primary-100/90 font-medium">
-                        <p class="leading-relaxed">{{ site_setting('site_address', 'Jl. Ulumul Islam No. 1, Aceh') }}</p>
-                        <p>Telepon / WA: <span class="font-mono text-accent-gold font-bold">+{{ site_setting('site_phone', '628111111111') }}</span></p>
+                        <p class="leading-relaxed flex items-start gap-2">
+                            <svg class="w-4 h-4 text-accent-gold shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <span>{{ site_setting('site_address', 'Jl. Ulumul Islam No. 1, Aceh') }}</span>
+                        </p>
+                        <p class="flex items-center gap-2">
+                            <svg class="w-4 h-4 text-accent-gold shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                            <span>Telepon / WA: <a href="{{ generate_whatsapp_link(site_setting('site_phone', '628111111111'), site_setting('whatsapp_template_general', 'Assalamualaikum. Saya ingin bertanya mengenai informasi Yayasan & Dayah Terpadu Ulumul Islam.')) }}" target="_blank" rel="noopener noreferrer" class="font-mono text-accent-gold font-bold hover:underline">+{{ site_setting('site_phone', '628111111111') }}</a></span>
+                        </p>
+
+                        <!-- Peta Interaktif Google Maps -->
                         <div class="pt-2">
-                            <a href="{{ generate_whatsapp_link(site_setting('site_phone', '628111111111'), site_setting('whatsapp_template_general', 'Assalamualaikum. Saya ingin bertanya mengenai informasi Yayasan & Dayah Terpadu Ulumul Islam.')) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md">
-                                <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                            <div class="relative w-full h-36 rounded-2xl overflow-hidden border border-white/15 bg-primary-900/50 shadow-inner group">
+                                <iframe 
+                                    src="{{ format_gmaps_embed_url(site_setting('site_gmaps')) }}" 
+                                    class="w-full h-full border-0 rounded-2xl opacity-90 group-hover:opacity-100 transition-opacity" 
+                                    style="border:0;" 
+                                    allowfullscreen="" 
+                                    loading="lazy" 
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                    title="Peta Lokasi Ulumul Islam">
+                                </iframe>
+                                <a href="{{ get_gmaps_direct_url(site_setting('site_gmaps')) }}" target="_blank" rel="noopener noreferrer" class="absolute bottom-2 right-2 px-2.5 py-1 rounded-lg bg-primary-950/85 hover:bg-primary-900 text-accent-gold hover:text-white border border-white/20 text-[10px] font-bold tracking-wider backdrop-blur-xs flex items-center gap-1 shadow-md transition-all">
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                    </svg>
+                                    Buka Peta
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="pt-1 flex flex-wrap gap-2">
+                            <a href="{{ generate_whatsapp_link(site_setting('site_phone', '628111111111'), site_setting('whatsapp_template_general', 'Assalamualaikum. Saya ingin bertanya mengenai informasi Yayasan & Dayah Terpadu Ulumul Islam.')) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md">
+                                <svg class="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24">
                                     <path d="M17.472 14.382c-.022-.08-.117-.162-.252-.224-.15-.075-.875-.43-1.012-.482-.137-.052-.236-.08-.335.08-.098.158-.383.48-.47.58-.086.1-.173.111-.322.036-.15-.075-.628-.23-1.198-.737-.442-.392-.74-875-.826-1.025-.087-.15-.01-.23.065-.304.068-.067.15-.175.224-.263.076-.087.1-.15.15-.25.05-.1.026-.188-.013-.263-.038-.075-.335-.805-.46-1.103-.122-.294-.246-.254-.337-.258-.088-.004-.19-.004-.29-.004-.1 0-.263.037-.4.188-.138.15-.525.513-.525 1.25s.537 1.45.612 1.55c.075.1 1.057 1.613 2.562 2.26 1.157.498 1.636.577 2.224.488.3-.045.923-.377 1.053-.74.13-.364.13-.676.09-.74zM12 2C6.477 2 2 6.477 2 12c0 2.01.597 3.885 1.62 5.46L2.05 22.05l4.74-1.25c1.517.86 3.256 1.35 5.21 1.35 5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
                                 </svg>
                                 Chat WhatsApp

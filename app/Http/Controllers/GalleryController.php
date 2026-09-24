@@ -32,9 +32,13 @@ class GalleryController extends Controller
         $albums = $query->paginate(12)->withQueryString();
 
         $years = GalleryAlbum::where('is_active', true)
-            ->selectRaw('DISTINCT YEAR(created_at) as year')
-            ->orderByDesc('year')
-            ->pluck('year')
+            ->pluck('created_at')
+            ->map(function ($date) {
+                return (int) date('Y', strtotime($date));
+            })
+            ->unique()
+            ->sortDesc()
+            ->values()
             ->toArray();
 
         if (empty($years)) {

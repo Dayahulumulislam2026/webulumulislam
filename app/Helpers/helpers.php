@@ -100,3 +100,59 @@ if (!function_exists('site_setting')) {
     }
 }
 
+if (!function_exists('format_gmaps_embed_url')) {
+    function format_gmaps_embed_url(?string $input): string
+    {
+        $input = trim((string) $input);
+
+        // 1. If empty, generate embed URL based on configured site address or default
+        if (empty($input)) {
+            $address = site_setting('site_address', 'Dayah Terpadu Ulumul Islam Uteunkot Cunda Lhokseumawe Aceh');
+            return 'https://maps.google.com/maps?q=' . urlencode($address) . '&t=&z=15&ie=UTF8&iwloc=&output=embed';
+        }
+
+        // 2. If user pasted an <iframe>...</iframe> tag, extract src attribute
+        if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/i', $input, $matches)) {
+            return html_entity_decode($matches[1]);
+        }
+
+        // 3. If input is already an embed URL (contains /embed or output=embed)
+        if (str_contains($input, '/maps/embed') || str_contains($input, 'output=embed')) {
+            return $input;
+        }
+
+        // 4. If input is a standard Google Maps URL with ?q=... or /place/...
+        if (preg_match('/[?&]q=([^&]+)/i', $input, $matches)) {
+            return 'https://maps.google.com/maps?q=' . $matches[1] . '&t=&z=15&ie=UTF8&iwloc=&output=embed';
+        }
+
+        // 5. If it's a general URL (e.g., shortlink or maps link) or text string/address
+        return 'https://maps.google.com/maps?q=' . urlencode($input) . '&t=&z=15&ie=UTF8&iwloc=&output=embed';
+    }
+}
+
+if (!function_exists('get_gmaps_direct_url')) {
+    function get_gmaps_direct_url(?string $input): string
+    {
+        $input = trim((string) $input);
+
+        if (empty($input)) {
+            $address = site_setting('site_address', 'Dayah Terpadu Ulumul Islam Uteunkot Cunda Lhokseumawe Aceh');
+            return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($address);
+        }
+
+        // If user pasted iframe, extract src
+        if (preg_match('/<iframe\b[^>]*\bsrc=["\']([^"\']+)["\']/i', $input, $matches)) {
+            return html_entity_decode($matches[1]);
+        }
+
+        // If it's a URL (http / https), return directly
+        if (str_starts_with($input, 'http://') || str_starts_with($input, 'https://')) {
+            return $input;
+        }
+
+        return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($input);
+    }
+}
+
+

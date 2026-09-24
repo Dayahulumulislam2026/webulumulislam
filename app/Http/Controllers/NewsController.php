@@ -32,12 +32,16 @@ class NewsController extends Controller
 
         $news = $query->paginate(9)->withQueryString();
 
-        // Distinct years for filter
+        // Distinct years for filter (cross-database compatible)
         $years = News::where('status', 'published')
             ->whereNotNull('published_at')
-            ->selectRaw('DISTINCT YEAR(published_at) as year')
-            ->orderByDesc('year')
-            ->pluck('year')
+            ->pluck('published_at')
+            ->map(function ($date) {
+                return (int) date('Y', strtotime($date));
+            })
+            ->unique()
+            ->sortDesc()
+            ->values()
             ->toArray();
 
         if (empty($years)) {

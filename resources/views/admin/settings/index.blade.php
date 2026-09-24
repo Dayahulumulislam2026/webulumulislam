@@ -63,8 +63,9 @@
                 </div>
 
                 <div>
-                    <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1.5">Embed Google Maps URL / Iframe Link</label>
-                    <input type="text" name="site_gmaps" value="{{ old('site_gmaps', $settings['site_gmaps']) }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary-800" placeholder="https://maps.google.com/...">
+                    <label class="block font-bold text-slate-700 uppercase tracking-wider mb-1.5">Link / Embed Google Maps Pesantren</label>
+                    <input type="text" name="site_gmaps" value="{{ old('site_gmaps', $settings['site_gmaps']) }}" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary-800" placeholder="https://maps.google.com/maps?q=... atau salin link dari Google Maps">
+                    <span class="text-[10px] text-slate-500 mt-1.5 block">💡 <strong>Format yang didukung:</strong> Link Google Maps (URL biasa), Link Embed (`/maps/embed`), kode sematan `&lt;iframe ...&gt;`, atau koordinat/alamat. Peta interaktif akan langsung tampil secara otomatis di footer website publik.</span>
                 </div>
             </div>
 
