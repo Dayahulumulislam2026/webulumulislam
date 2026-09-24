@@ -108,7 +108,7 @@ if (!function_exists('format_gmaps_embed_url')) {
         // 1. If empty, generate embed URL based on configured site address or default
         if (empty($input)) {
             $address = site_setting('site_address', 'Dayah Terpadu Ulumul Islam Uteunkot Cunda Lhokseumawe Aceh');
-            return 'https://maps.google.com/maps?q=' . urlencode($address) . '&t=&z=15&ie=UTF8&iwloc=&output=embed';
+            return 'https://maps.google.com/maps?q=' . urlencode($address) . '&hl=id&z=16&output=embed';
         }
 
         // 2. If user pasted an <iframe>...</iframe> tag, extract src attribute
@@ -121,13 +121,66 @@ if (!function_exists('format_gmaps_embed_url')) {
             return $input;
         }
 
-        // 4. If input is a standard Google Maps URL with ?q=... or /place/...
-        if (preg_match('/[?&]q=([^&]+)/i', $input, $matches)) {
-            return 'https://maps.google.com/maps?q=' . $matches[1] . '&t=&z=15&ie=UTF8&iwloc=&output=embed';
-        }
+        // 4. Cache key for resolved URL if external resolution is required
+        $cacheKey = 'gmaps_embed_fmt_' . md5($input);
+        return \Illuminate\Support\Facades\Cache::remember($cacheKey, 86400 * 30, function () use ($input) {
+            $workingUrl = $input;
 
-        // 5. If it's a general URL (e.g., shortlink or maps link) or text string/address
-        return 'https://maps.google.com/maps?q=' . urlencode($input) . '&t=&z=15&ie=UTF8&iwloc=&output=embed';
+            // If shortlink (maps.app.goo.gl or goo.gl/maps), follow redirects to obtain expanded Google Maps URL
+            if (preg_match('#(maps\.app\.goo\.gl|goo\.gl/maps)#i', $workingUrl)) {
+                try {
+                    $ch = curl_init($workingUrl);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 4);
+                    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+                    curl_exec($ch);
+                    $effective = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+                    curl_close($ch);
+                    if ($effective && $effective !== $workingUrl) {
+                        $workingUrl = $effective;
+                    }
+                } catch (\Throwable $e) {}
+            }
+
+            // Extract coordinates from !3d{lat}!4d{lng} (standard Google Maps Place URL)
+            if (preg_match('/!3d([0-9.-]+)!4d([0-9.-]+)/', $workingUrl, $matches)) {
+                $lat = $matches[1];
+                $lng = $matches[2];
+                return "https://maps.google.com/maps?q={$lat},{$lng}&hl=id&z=16&output=embed";
+            }
+
+            // Extract coordinates from @{lat},{lng}
+            if (preg_match('#@([0-9.-]+),([0-9.-]+)#', $workingUrl, $matches)) {
+                $lat = $matches[1];
+                $lng = $matches[2];
+                return "https://maps.google.com/maps?q={$lat},{$lng}&hl=id&z=16&output=embed";
+            }
+
+            // Extract place name from /maps/place/{NAME}/
+            if (preg_match('#/maps/place/([^/@?]+)#i', $workingUrl, $matches)) {
+                $place = urldecode($matches[1]);
+                $place = str_replace('+', ' ', $place);
+                return "https://maps.google.com/maps?q=" . urlencode($place) . "&hl=id&z=16&output=embed";
+            }
+
+            // If query q=... is present
+            if (preg_match('/[?&]q=([^&]+)/i', $workingUrl, $matches)) {
+                $query = urldecode($matches[1]);
+                if (!str_starts_with($query, 'http')) {
+                    return "https://maps.google.com/maps?q=" . urlencode($query) . "&hl=id&z=16&output=embed";
+                }
+            }
+
+            // If it's a URL that couldn't be parsed, use the site address as fallback query
+            if (str_starts_with($workingUrl, 'http://') || str_starts_with($workingUrl, 'https://')) {
+                $address = site_setting('site_address', 'Dayah Terpadu Ulumul Islam Uteunkot Cunda Lhokseumawe Aceh');
+                return "https://maps.google.com/maps?q=" . urlencode($address) . "&hl=id&z=16&output=embed";
+            }
+
+            // Otherwise treat input as search query/address
+            return "https://maps.google.com/maps?q=" . urlencode($workingUrl) . "&hl=id&z=16&output=embed";
+        });
     }
 }
 
@@ -154,5 +207,6 @@ if (!function_exists('get_gmaps_direct_url')) {
         return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($input);
     }
 }
+
 
 

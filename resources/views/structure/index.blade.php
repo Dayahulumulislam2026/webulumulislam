@@ -113,14 +113,9 @@
                     @foreach($vices as $vPos)
                     <div class="bg-white rounded-3xl border border-border-main shadow-xs overflow-hidden">
                         <div class="p-5 sm:p-6 bg-gradient-to-r from-primary-50/90 via-slate-50 to-white border-b border-border-main flex items-center justify-between gap-4">
-                            <div class="flex items-center gap-3">
-                                <span class="w-8 h-8 rounded-xl bg-primary-950 text-accent-gold font-black flex items-center justify-center text-xs shadow-xs">
-                                    {{ $loop->iteration }}
-                                </span>
-                                <div>
-                                    <h4 class="text-base font-black text-slate-900">{{ $vPos->position_name }}</h4>
-                                    <p class="text-[11px] text-primary-900 font-bold">{{ $vPos->members->count() }} Pejabat / Anggota Pengurus</p>
-                                </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-900">{{ $vPos->position_name }}</h4>
+                                <p class="text-[11px] text-primary-900 font-bold">{{ $vPos->members->count() }} Pejabat / Anggota Pengurus</p>
                             </div>
                         </div>
 
@@ -187,14 +182,9 @@
                     @foreach($divisions as $div)
                     <div class="bg-white rounded-3xl border border-border-main shadow-xs overflow-hidden">
                         <div class="p-5 sm:p-6 bg-gradient-to-r from-emerald-50/70 to-slate-50 border-b border-border-main flex items-center justify-between gap-4">
-                            <div class="flex items-center gap-3">
-                                <span class="w-8 h-8 rounded-xl bg-emerald-800 text-white font-black flex items-center justify-center text-xs">
-                                    {{ $loop->iteration }}
-                                </span>
-                                <div>
-                                    <h4 class="text-base font-black text-slate-900">{{ $div->position_name }}</h4>
-                                    <p class="text-[11px] text-emerald-800 font-semibold">{{ $div->members->count() }} Anggota Pengurus</p>
-                                </div>
+                            <div>
+                                <h4 class="text-base font-black text-slate-900">{{ $div->position_name }}</h4>
+                                <p class="text-[11px] text-emerald-800 font-semibold">{{ $div->members->count() }} Anggota Pengurus</p>
                             </div>
                         </div>
 

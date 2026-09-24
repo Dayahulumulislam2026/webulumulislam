@@ -213,7 +213,7 @@ class InstitutionController extends Controller
         return view('structure.index', compact('institutions', 'selectedUnit', 'activeInstitution', 'leaders', 'vices', 'divisions'));
     }
 
-    private function getTopStructureMembers(Institution $institution, int $limit = 5)
+    private function getTopStructureMembers(Institution $institution, int $limit = 6)
     {
         $positions = StructurePosition::with(['members' => function ($q) {
             $q->where('is_active', true)->orderBy('sort_order')->orderBy('id');
@@ -226,20 +226,35 @@ class InstitutionController extends Controller
 
         $topList = collect();
         foreach ($positions as $pos) {
-            foreach ($pos->members as $member) {
+            // Pick ONLY the primary leader / ketua of each position (skip regular members)
+            $leaderMember = null;
+
+            // 1. First priority: explicitly marked as 'head'
+            $leaderMember = $pos->members->firstWhere('member_role', 'head');
+
+            // 2. If none marked as 'head', take the first member whose title doesn't start with 'Anggota'
+            if (!$leaderMember && $pos->members->isNotEmpty()) {
+                $first = $pos->members->first();
+                if (!preg_match('/^anggota/i', trim($first->title ?: ''))) {
+                    $leaderMember = $first;
+                }
+            }
+
+            if ($leaderMember) {
                 $topList->push([
-                    'member' => $member,
+                    'member' => $leaderMember,
                     'position' => $pos,
                     'category' => $pos->category,
                 ]);
                 if ($topList->count() >= $limit) {
-                    break 2;
+                    break;
                 }
             }
         }
 
         return $topList;
     }
+
 
     private function getFeaturedOrRecentAlumni(?string $level = null, int $limit = 13)
     {

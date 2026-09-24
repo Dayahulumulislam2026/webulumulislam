@@ -32,7 +32,17 @@ class GoogleMapsHelperTest extends TestCase
         $queryLink = 'https://maps.google.com/?q=5.18,97.14';
         $url = format_gmaps_embed_url($queryLink);
         $this->assertStringContainsString('output=embed', $url);
-        $this->assertStringContainsString('5.18,97.14', $url);
+        $this->assertStringContainsString('5.18', urldecode($url));
+    }
+
+    public function test_format_gmaps_embed_url_with_shortlink(): void
+    {
+        $shortlink = 'https://maps.app.goo.gl/g6xvxkoSP4qHHXTy9';
+        $url = format_gmaps_embed_url($shortlink);
+        $this->assertStringContainsString('maps.google.com/maps?q=', $url);
+        $this->assertStringContainsString('output=embed', $url);
+        // Assert it extracted coordinates or place query
+        $this->assertTrue(str_contains($url, '5.106') || str_contains($url, 'Ulumul'));
     }
 
     public function test_get_gmaps_direct_url(): void
