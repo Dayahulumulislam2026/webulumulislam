@@ -3,38 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', site_setting('site_meta_title', 'Yayasan & Dayah Terpadu Ulumul Islam')) | Ulumul Islam</title>
-    <meta name="description" content="@yield('description', site_setting('site_meta_description', 'Portal Resmi Yayasan Pendidikan dan Pondok Pesantren Dayah Terpadu Ulumul Islam (SMP, SMA, Dayah).'))">
-    <meta name="keywords" content="@yield('keywords', site_setting('site_meta_keywords', 'dayah, pesantren, smp ulumul islam, sma ulumul islam, dayah terpadu, aceh, tahfidz'))">
-    <link rel="icon" type="image/png" href="/logo.png">
+    @php
+        $siteName = site_setting('site_meta_title', 'Dayah Ulumul Islam');
+        $siteDesc = site_setting('site_meta_description', 'Pondok Pesantren Dayah Terpadu Ulumul Islam, mengintegrasikan SMP, SMA, dan pengajian kitab kuning.');
+        $siteKeywords = site_setting('site_meta_keywords', 'dayah, pesantren, smp ulumul islam, sma ulumul islam, dayah terpadu, aceh, panton labu');
+        $pageTitle = trim($__env->yieldContent('title'));
+        $finalTitle = (empty($pageTitle) || $pageTitle === 'Beranda' || request()->routeIs('home')) 
+            ? $siteName 
+            : $pageTitle . ' | ' . $siteName;
+        $ogImg = trim($__env->yieldContent('og_image'));
+        if (empty($ogImg)) {
+            $ogImg = site_setting('site_og_image') ? asset(site_setting('site_og_image')) : asset('logo.png');
+        }
+    @endphp
+    <title>{{ $finalTitle }}</title>
+    <meta name="description" content="@yield('description', $siteDesc)">
+    <meta name="keywords" content="@yield('keywords', $siteKeywords)">
+    <meta name="application-name" content="{{ $siteName }}">
+    <link rel="canonical" href="{{ url()->current() }}">
 
-    <!-- Open Graph / Facebook -->
+    <!-- Google Favicon & Touch Icons (Memastikan Logo Tampil di Snippet Google Search) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('logo.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('logo.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('logo.png') }}">
+
+    <!-- Open Graph / Facebook / WhatsApp Preview -->
     <meta property="og:type" content="@yield('og_type', 'website')">
+    <meta property="og:site_name" content="{{ $siteName }}">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:title" content="@yield('title', site_setting('site_meta_title', 'Yayasan & Dayah Terpadu Ulumul Islam')) | Ulumul Islam">
-    <meta property="og:description" content="@yield('description', site_setting('site_meta_description', 'Portal Resmi Yayasan Pendidikan dan Pondok Pesantren Dayah Terpadu Ulumul Islam.'))">
-    <meta property="og:image" content="@yield('og_image', site_setting('site_og_image') ? asset(site_setting('site_og_image')) : asset('logo.png'))">
+    <meta property="og:title" content="{{ $finalTitle }}">
+    <meta property="og:description" content="@yield('description', $siteDesc)">
+    <meta property="og:image" content="{{ $ogImg }}">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title', site_setting('site_meta_title', 'Yayasan & Dayah Terpadu Ulumul Islam')) | Ulumul Islam">
-    <meta name="twitter:description" content="@yield('description', site_setting('site_meta_description', 'Portal Resmi Yayasan Pendidikan dan Pondok Pesantren Dayah Terpadu Ulumul Islam.'))">
-    <meta name="twitter:image" content="@yield('og_image', site_setting('site_og_image') ? asset(site_setting('site_og_image')) : asset('logo.png'))">
+    <meta name="twitter:title" content="{{ $finalTitle }}">
+    <meta name="twitter:description" content="@yield('description', $siteDesc)">
+    <meta name="twitter:image" content="{{ $ogImg }}">
 
     @if(site_setting('google_site_verification'))
-    <meta name="google-site-verification" content="{{ site_setting('google_site_verification') }}">
+    @php
+        $gsv = site_setting('google_site_verification');
+        if (preg_match('/content=["\']([^"\']+)["\']/i', $gsv, $matches)) {
+            $gsv = $matches[1];
+        }
+    @endphp
+    <meta name="google-site-verification" content="{{ $gsv }}">
     @endif
 
     @if(site_setting('google_analytics_id'))
+    @php
+        $gaId = site_setting('google_analytics_id');
+        if (preg_match('/(G-[A-Z0-9]+)/i', $gaId, $matches)) {
+            $gaId = $matches[1];
+        }
+    @endphp
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site_setting('google_analytics_id') }}"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', '{{ site_setting('google_analytics_id') }}');
+      gtag('config', '{{ $gaId }}');
     </script>
     @endif
+
+    <!-- Structured Data Schema.org untuk Pengenalan Mesin Pencari Google (Site Name & Logo) -->
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'WebSite',
+        'name' => $siteName,
+        'alternateName' => ['Ulumul Islam', 'Pondok Pesantren Ulumul Islam', 'Dayah Terpadu Ulumul Islam', 'Yayasan Ulumul Islam'],
+        'url' => url('/'),
+    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
+    <script type="application/ld+json">
+    {!! json_encode([
+        '@context' => 'https://schema.org',
+        '@type' => 'EducationalOrganization',
+        'name' => $siteName,
+        'url' => url('/'),
+        'logo' => asset('logo.png'),
+        'image' => asset('logo.png'),
+        'description' => $siteDesc,
+        'address' => [
+            '@type' => 'PostalAddress',
+            'addressLocality' => 'Aceh Utara',
+            'addressRegion' => 'Aceh',
+            'addressCountry' => 'ID',
+        ],
+    ], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) !!}
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -7,4 +7,4 @@ Disallow: /admin/
 Disallow: /admin/*
 
 # Lokasi Peta Situs Resmi
-Sitemap: https://ulumulislam.org/sitemap.xml
+Sitemap: https://ulumulislam.id/sitemap.xml

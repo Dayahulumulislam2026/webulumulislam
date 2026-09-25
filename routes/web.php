@@ -39,6 +39,8 @@ Route::get('/berita/{slug}', [NewsController::class, 'show'])->name('news.show')
 Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index');
 Route::get('/galeri/{slug}', [GalleryController::class, 'show'])->name('gallery.show');
 
+Route::get('/sitemap.xml', [HomeController::class, 'sitemap'])->name('sitemap');
+
 /*
 |--------------------------------------------------------------------------
 | Authentication Routes

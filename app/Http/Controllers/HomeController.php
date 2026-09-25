@@ -82,4 +82,44 @@ class HomeController extends Controller
             'settings'
         ));
     }
+
+    public function sitemap(): \Illuminate\Http\Response
+    {
+        $urls = [
+            ['loc' => url('/'), 'priority' => '1.0', 'changefreq' => 'daily', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/tentang-kami'), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/dayah'), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/smp'), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/sma'), 'priority' => '0.9', 'changefreq' => 'monthly', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/ikada'), 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/struktur-organisasi'), 'priority' => '0.8', 'changefreq' => 'monthly', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/pendaftaran'), 'priority' => '0.9', 'changefreq' => 'weekly', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/berita'), 'priority' => '0.8', 'changefreq' => 'daily', 'lastmod' => now()->toAtomString()],
+            ['loc' => url('/galeri'), 'priority' => '0.7', 'changefreq' => 'weekly', 'lastmod' => now()->toAtomString()],
+        ];
+
+        $news = News::where('status', 'published')->orderByDesc('created_at')->get();
+        foreach ($news as $item) {
+            $urls[] = [
+                'loc' => route('news.show', $item->slug),
+                'priority' => '0.7',
+                'changefreq' => 'weekly',
+                'lastmod' => ($item->updated_at ?? $item->created_at)->toAtomString(),
+            ];
+        }
+
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        foreach ($urls as $u) {
+            $xml .= "  <url>\n";
+            $xml .= "    <loc>" . htmlspecialchars($u['loc']) . "</loc>\n";
+            $xml .= "    <lastmod>" . $u['lastmod'] . "</lastmod>\n";
+            $xml .= "    <changefreq>" . $u['changefreq'] . "</changefreq>\n";
+            $xml .= "    <priority>" . $u['priority'] . "</priority>\n";
+            $xml .= "  </url>\n";
+        }
+        $xml .= '</urlset>';
+
+        return response($xml, 200, ['Content-Type' => 'application/xml']);
+    }
 }
