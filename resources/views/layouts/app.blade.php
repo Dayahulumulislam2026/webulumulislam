@@ -430,8 +430,8 @@
                 </button>
             </div>
 
-            <!-- Flyer / Gambar Pengumuman -->
-            <div id="ann-modal-image-container" class="rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 max-h-80 flex items-center justify-center hidden">
+            <!-- Flyer / Gambar Pengumuman (Rasio 4:5) -->
+            <div id="ann-modal-image-container" class="w-full max-w-sm mx-auto aspect-[4/5] rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-md flex items-center justify-center hidden">
                 <img id="ann-modal-image" src="" alt="Flyer Pengumuman" class="w-full h-full object-contain">
             </div>
 

@@ -174,10 +174,10 @@
             <!-- Unit 1: SMP -->
             <div class="bg-white rounded-3xl p-8 border border-border-main shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between scroll-reveal group">
                 <div class="space-y-4">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-base group-hover:bg-primary-900 group-hover:text-white transition-colors">
-                        SMP
+                    <div class="w-14 h-14 rounded-2xl bg-white p-1.5 border border-border-main shadow-xs flex items-center justify-center shrink-0">
+                        <img src="{{ $smp?->logo_url ?? asset('logo.png') }}" alt="{{ $smp?->name ?? 'SMP Ulumul Islam' }}" class="w-full h-full object-contain">
                     </div>
-                    <h3 class="text-xl font-black text-slate-900">SMP Ulumul Islam</h3>
+                    <h3 class="text-xl font-black text-slate-900">{{ $smp?->name ?? 'SMP Ulumul Islam' }}</h3>
                     <p class="text-xs text-text-sub leading-relaxed font-medium">
                         {{ Str::limit($smp->description ?? 'Membina dasar keilmuan umum dan kepribadian Islami yang kuat dengan hafalan Al-Quran dan pembiasaan adab harian.', 140) }}
                     </p>
@@ -192,10 +192,10 @@
             <!-- Unit 2: SMA -->
             <div class="bg-white rounded-3xl p-8 border border-border-main shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between scroll-reveal group">
                 <div class="space-y-4">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-black text-base group-hover:bg-primary-900 group-hover:text-white transition-colors">
-                        SMA
+                    <div class="w-14 h-14 rounded-2xl bg-white p-1.5 border border-border-main shadow-xs flex items-center justify-center shrink-0">
+                        <img src="{{ $sma?->logo_url ?? asset('logo.png') }}" alt="{{ $sma?->name ?? 'SMA Ulumul Islam' }}" class="w-full h-full object-contain">
                     </div>
-                    <h3 class="text-xl font-black text-slate-900">SMA Ulumul Islam</h3>
+                    <h3 class="text-xl font-black text-slate-900">{{ $sma?->name ?? 'SMA Ulumul Islam' }}</h3>
                     <p class="text-xs text-text-sub leading-relaxed font-medium">
                         {{ Str::limit($sma->description ?? 'Menyiapkan santri unggul dalam sains, sosial, dan agama dengan fokus kelulusan perguruan tinggi favorit serta universitas Timur Tengah.', 140) }}
                     </p>
@@ -210,10 +210,10 @@
             <!-- Unit 3: Dayah Terpadu -->
             <div class="bg-white rounded-3xl p-8 border border-border-main shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between scroll-reveal group">
                 <div class="space-y-4">
-                    <div class="w-12 h-12 rounded-2xl bg-cyan-100 text-cyan-800 flex items-center justify-center font-black text-base group-hover:bg-primary-900 group-hover:text-white transition-colors">
-                        DYH
+                    <div class="w-14 h-14 rounded-2xl bg-white p-1.5 border border-border-main shadow-xs flex items-center justify-center shrink-0">
+                        <img src="{{ $dayah?->logo_url ?? asset('logo.png') }}" alt="{{ $dayah?->name ?? 'Dayah Terpadu' }}" class="w-full h-full object-contain">
                     </div>
-                    <h3 class="text-xl font-black text-slate-900">Dayah Terpadu</h3>
+                    <h3 class="text-xl font-black text-slate-900">{{ $dayah?->name ?? 'Dayah Terpadu' }}</h3>
                     <p class="text-xs text-text-sub leading-relaxed font-medium">
                         {{ Str::limit($dayah->description ?? 'Pusat pengkaderan ulama amilin dengan pendalaman kitab turots (kitab kuning), bahasa Arab-Inggris aktif, dan pembinaan 24 jam.', 140) }}
                     </p>
@@ -229,7 +229,6 @@
 </section>
 
 <!-- Warta & Berita Terbaru -->
-@if($news->count() > 0)
 <section class="py-20 bg-white border-t border-border-main">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 scroll-reveal">
@@ -237,11 +236,14 @@
                 <span class="text-xs font-extrabold uppercase tracking-widest text-accent-gold">Warta Pesantren</span>
                 <h2 class="text-2xl sm:text-3xl font-black text-primary-950 tracking-tight">Berita & Informasi Terkini</h2>
             </div>
+            @if($news->count() > 0)
             <a href="{{ route('news.index') }}" class="text-xs font-extrabold uppercase tracking-wider text-primary-900 hover:text-accent-gold transition-colors inline-flex items-center gap-1.5">
                 Lihat Semua Berita &rarr;
             </a>
+            @endif
         </div>
 
+        @if($news->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach($news->take(3) as $item)
             <article class="bg-bg-warm rounded-3xl overflow-hidden border border-border-main shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col scroll-reveal">
@@ -276,12 +278,19 @@
             </article>
             @endforeach
         </div>
+        @else
+        <div class="py-14 px-6 rounded-3xl bg-bg-warm border border-dashed border-border-main text-center space-y-2 max-w-xl mx-auto scroll-reveal">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-accent-gold flex items-center justify-center mx-auto text-2xl">
+                📰
+            </div>
+            <h4 class="text-sm font-bold text-slate-800">Belum ada berita yang di publish</h4>
+            <p class="text-xs text-text-sub">Warta dan informasi kegiatan pesantren akan tampil di sini setelah dipublikasikan.</p>
+        </div>
+        @endif
     </div>
 </section>
-@endif
 
 <!-- Alumni Berprestasi Section -->
-@if($featuredAlumni->count() > 0)
 <section class="py-20 bg-primary-950 text-white relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
         <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 scroll-reveal">
@@ -302,6 +311,7 @@
             @endif
         </div>
 
+        @if($featuredAlumni->count() > 0)
         <div id="home-alumni-track" class="flex gap-4 overflow-x-auto pb-4 scrollbar-thin scrollbar-thumb-accent-gold/40 snap-x scroll-smooth">
             @foreach($featuredAlumni as $alum)
             <div onclick="openAlumniDetailModal({{ json_encode($alum) }})" class="w-[85%] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-14px)] lg:w-[calc(20%-13px)] shrink-0 bg-white/10 backdrop-blur-md rounded-3xl p-5 border border-white/15 space-y-4 flex flex-col justify-between scroll-reveal cursor-pointer group hover:border-accent-gold/60 hover:bg-white/15 transition-all snap-start">
@@ -335,9 +345,17 @@
             </div>
             @endforeach
         </div>
+        @else
+        <div class="py-14 px-6 rounded-3xl bg-white/5 border border-dashed border-white/20 text-center space-y-2 max-w-xl mx-auto scroll-reveal">
+            <div class="w-12 h-12 rounded-2xl bg-white/10 text-accent-gold flex items-center justify-center mx-auto text-2xl">
+                🎓
+            </div>
+            <h4 class="text-sm font-bold text-white">Belum ada data alumni yang dimasukkan</h4>
+            <p class="text-xs text-primary-200/70">Profil lulusan dan jejak prestasi alumni Ulumul Islam akan segera diperbarui.</p>
+        </div>
+        @endif
     </div>
 </section>
-@endif
 
 <!-- Call to Action Banner -->
 <section class="py-16 bg-gradient-to-r from-primary-900 to-primary-950 text-white border-t border-primary-800">
